@@ -1,14 +1,15 @@
 import React from "react";
 import axios from "axios";
+import { API_URL, SET_ERROR, SET_LIST, SET_LIST_FILTERED } from "./constants";
 
 export const dataReducer = (state, action) => {
-  if (action.type === "SET_ERROR") {
+  if (action.type === SET_ERROR) {
     return { ...state, list: [], error: true };
   }
-  if (action.type === "SET_LIST") {
+  if (action.type === SET_LIST) {
     return { ...state, list: action.list, error: null };
   }
-  if (action.type === "SET_LIST_FILTERED") {
+  if (action.type === SET_LIST_FILTERED) {
     return { ...state, list: action.list, error: null };
   }
   throw new Error();
@@ -26,13 +27,13 @@ const List = () => {
   React.useEffect(() => {
     axios
       .get(
-        "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02&limit=20"
+        API_URL
       )
       .then(response => {
-        dispatch({ type: "SET_LIST", list: response.data.features });
+        dispatch({ type: SET_LIST, list: response.data.features });
       })
       .catch(() => {
-        dispatch({ type: "SET_ERROR" });
+        dispatch({ type: SET_ERROR });
       });
   }, []);
 
@@ -49,7 +50,7 @@ const List = () => {
       filteredItem => filteredItem.properties.magType === filter
     );
 
-    dispatch({ type: "SET_LIST_FILTERED", list: filteredItems });
+    dispatch({ type: SET_LIST_FILTERED, list: filteredItems });
   };
 
   return (
